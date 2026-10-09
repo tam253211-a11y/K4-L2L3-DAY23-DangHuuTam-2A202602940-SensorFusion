@@ -117,8 +117,9 @@ File per-mode `metrics_lidar.json`, `metrics_fused.json`, `grade_run_lidar.log`,
    Lệch nhỏ: cặp vẫn qua cổng, EKF bị kéo về sai vị trí → residual LiDAR ở frame sau
    tăng ngược chiều (LiDAR và camera "giằng co"), RMSE fused tăng, có thể vượt LiDAR.
    Lệch lớn: d² vượt ngưỡng ≈ 10.6, cặp camera bị gate loại, fused thoái hóa về
-   LiDAR-only. Lệch góc (rotation) gây bias tăng theo khoảng cách; lệch tịnh tiến gây
-   bias lớn hơn ở xe gần.
+   LiDAR-only. Lệch góc (rotation) δθ gây bias pixel gần như không đổi (≈ f·δθ, với
+   f ≈ 2000 px thì 0.1° ≈ 3.5 px), nhưng quy ra mét thì sai số tăng theo khoảng cách;
+   lệch tịnh tiến t gây bias pixel ≈ f·t/độ sâu, nên lớn ở xe gần và nhỏ ở xe xa.
 
 5. Vì sao `associate_and_update(..., sensor)` cần sensor tường minh ở frame rỗng?
    Giải thích vì sao lidar quyết định score/init/delete còn camera chỉ EKF update.
@@ -129,10 +130,12 @@ File per-mode `metrics_lidar.json`, `metrics_fused.json`, `grade_run_lidar.log`,
    thì ghost sống mãi. Với camera, cùng lời gọi phải **không** làm gì với lifecycle
    (`manager.py`: `if sensor.name != "lidar": return`). Code: `associate_and_update`
    luôn kết thúc bằng `manager.manage_tracks(..., sensor)` kể cả khi không có cặp.
-   LiDAR quyết định tồn tại vì cho vị trí 3D đầy đủ, phủ 360° và là nguồn tạo
-   detection. Camera chỉ thấy FOV FRONT, không có độ sâu, và trong lab là đo mô phỏng
-   từ nhãn; nếu camera đổi score, track ngoài FOV camera bị "miss" oan, track trong
-   FOV được cộng hai lần mỗi frame, và một đo 2D không thể khởi tạo state 3D.
+   LiDAR quyết định tồn tại vì cho vị trí 3D đầy đủ, FOV rộng (±90° quanh hướng
+   trước trong lab) và là nguồn tạo detection. Camera FRONT chỉ thấy khoảng ±24.7°
+   (tính từ intrinsics và bề rộng ảnh của segment), không có độ sâu, và trong lab là
+   đo mô phỏng từ nhãn; nếu camera đổi score, track ngoài FOV camera bị "miss" oan,
+   track trong FOV được cộng hai lần mỗi frame, và một đo 2D không thể khởi tạo
+   state 3D.
 
 6. Nêu điều kiện xác nhận, giữ confirmed sau miss, và điều kiện xóa track.
 
