@@ -4,10 +4,10 @@
 
 ## Thông tin học viên
 
-- Họ tên:
-- MSSV:
+- Họ tên: Đặng Hữu Tâm
+- MSSV: 2A202602940
 - Email:
-- Link repo (fork):
+- Link repo (fork): https://github.com/tam253211-a11y/K4-L2L3-DAY23-DangHuuTam-2A202602940-SensorFusion
 - Commit hash nộp (`git rev-parse HEAD`):
 
 ## Tóm tắt kết quả
