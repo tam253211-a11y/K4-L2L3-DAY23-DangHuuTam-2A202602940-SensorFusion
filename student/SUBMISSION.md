@@ -1,7 +1,5 @@
 # Báo cáo bài nộp — Day 23 Sensor Fusion Lab
 
-> Điền file này rồi commit. Cách nộp: [hướng dẫn nộp](../SUBMISSION.md).
-
 ## Thông tin học viên
 
 - Họ tên: Đặng Hữu Tâm
